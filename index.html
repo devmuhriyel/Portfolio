@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marielle Jane Grace Andres | Portfolio</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; color: var(--accent-pink);">PORTFOLIO</span>
+      <button class="theme-toggle" id="themeBtn" aria-label="Switch to night mode" title="Switch to night mode">
+        <span id="themeIcon">☀️</span>
+      </button>
+    </header>
+
+    <!-- Bio / Intro -->
+    <section class="profile">
+      <h1>Marielle Jane Grace Andres</h1>
+      <div class="profile-links">
+        <a href="https://github.com/devmuhriyel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Open my GitHub profile">
+        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.21-3.37-1.21-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.2 9.2 0 0 1 12 7.04c.85 0 1.7.12 2.49.37 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.95.68 1.92 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" /></svg>
+        GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/devmuhriyel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Open my LinkedIn profile">
+          <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M5.2 3.5a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM3.3 9.6h3.8V21H3.3V9.6Zm6.2 0h3.6v1.56h.05c.5-.95 1.72-1.95 3.55-1.95 3.8 0 4.5 2.5 4.5 5.75V21h-3.8v-5.36c0-1.28-.02-2.93-1.78-2.93-1.78 0-2.05 1.4-2.05 2.84V21H9.5V9.6Z" /></svg>
+          LinkedIn
+        </a>
+      </div>
+      <p>A collection of my designs and developmental projects.</p>
+    </section>
+
+    <!-- Category Filters -->
+    <nav class="filters" aria-label="Filter portfolio by category">
+      <button class="filter-btn active" data-category="all">All</button>
+      <button class="filter-btn" data-category="figma">Figma</button>
+      <button class="filter-btn" data-category="canva">Canva</button>
+      <button class="filter-btn" data-category="digital-art">Digital Art</button>
+    </nav>
+
+    <!-- Project preview buttons -->
+    <main class="links-list" id="portfolioList">
+      <button class="link-card project-button" type="button" data-category="figma" data-title="Bible Study App" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FH6zoaBemqDUv5z3ZuDFk3A%2FBible-App--Copy-%3Ft%3DjWJaD0wMbaGJyNI6-1" data-project-url="https://www.figma.com/design/H6zoaBemqDUv5z3ZuDFk3A/Bible-App--Copy-?t=jWJaD0wMbaGJyNI6-1">
+        <span class="project-heading"><span class="link-title">Bible Study App</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="figma" data-title="CINECHILL" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FogaAPc76WbhZEbiU7C1AYk%2FMovie-Ticket-Booking-Application%3Fnode-id%3D0-1%26p%3Df" data-project-url="https://www.figma.com/design/ogaAPc76WbhZEbiU7C1AYk/Movie-Ticket-Booking-Application?node-id=0-1&amp;p=f">
+        <span class="project-heading"><span class="link-title">CINECHILL</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="figma" data-title="SLU Document Management System" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FJl4KgKn2wF2b0hKv1C741G%2FWebtech%3Fnode-id%3D1-14%26t%3Dj0VO6nka4wXLfBV8-1" data-project-url="https://www.figma.com/design/Jl4KgKn2wF2b0hKv1C741G/Webtech?node-id=1-14&amp;t=j0VO6nka4wXLfBV8-1">
+        <span class="project-heading"><span class="link-title">SLU Document Management System</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="figma" data-title="Gamified Learning Application" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2Fp6Knreh2QNXJU419newlZ7%2FFinal-Project-Prototypes%3Fnode-id%3D0-1%26t%3DrOabs3kIKgdPbBab-1" data-project-url="https://www.figma.com/design/p6Knreh2QNXJU419newlZ7/Final-Project-Prototypes?node-id=0-1&amp;t=rOabs3kIKgdPbBab-1">
+        <span class="project-heading"><span class="link-title">Gamified Learning Application</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="figma" data-title="Agricultural Website" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2F44fIxEYOBAuk8h1HvbpemK%2F211Website--Copy-%3Fnode-id%3D0-1%26t%3DjWJaD0wMbaGJyNI6-1" data-project-url="https://www.figma.com/design/44fIxEYOBAuk8h1HvbpemK/211Website--Copy-?node-id=0-1&amp;t=jWJaD0wMbaGJyNI6-1">
+        <span class="project-heading"><span class="link-title">Agricultural Website</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="canva" data-title="Brochure Theme Park" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAHDX22a1mc/hvzuJRVQqkfoH_wLaHdedg/view?embed" data-project-url="https://www.canva.com/design/DAHDX22a1mc/hvzuJRVQqkfoH_wLaHdedg/view">
+        <span class="project-heading"><span class="link-title">Brochure Theme Park</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="canva" data-title="MedMory Pitch Presentation" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAGyZBO3uHw/9zVVA5EkOzv5kEm4VcNriQ/view?embed" data-project-url="https://www.canva.com/design/DAGyZBO3uHw/9zVVA5EkOzv5kEm4VcNriQ/view">
+        <span class="project-heading"><span class="link-title">MedMory Pitch Presentation</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="canva" data-title="Poster" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAGLel-KS7E/9ElC4tIzWZIwD4UjfPobXQ/view?embed" data-project-url="https://www.canva.com/design/DAGLel-KS7E/9ElC4tIzWZIwD4UjfPobXQ/view">
+        <span class="project-heading"><span class="link-title">Poster</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="canva" data-title="GMO Infographic" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAFU4-6u3us/JHame6MnQcJdRIMPnizXjA/view?embed" data-project-url="https://www.canva.com/design/DAFU4-6u3us/JHame6MnQcJdRIMPnizXjA/view">
+        <span class="project-heading"><span class="link-title">GMO Infographic</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 1" data-provider="Digital Art" data-embed-url="images/DigiArt/image.png" data-project-url="images/DigiArt/image.png">
+        <span class="project-heading"><span class="link-title">Digital Art 1</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 2" data-provider="Digital Art" data-embed-url="images/DigiArt/image2.png" data-project-url="images/DigiArt/image2.png">
+        <span class="project-heading"><span class="link-title">Digital Art 2</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 3" data-provider="Digital Art" data-embed-url="images/DigiArt/image3.png" data-project-url="images/DigiArt/image3.png">
+        <span class="project-heading"><span class="link-title">Digital Art 3</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 4" data-provider="Digital Art" data-embed-url="images/DigiArt/image4.png" data-project-url="images/DigiArt/image4.png">
+        <span class="project-heading"><span class="link-title">Digital Art 4</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
+      </button>
+    </main>
+
+    <dialog class="project-dialog" id="projectDialog" aria-labelledby="dialogTitle">
+      <div class="dialog-panel">
+        <header class="dialog-header">
+          <div class="dialog-heading">
+            <h2 id="dialogTitle"></h2>
+            <span class="category-badge" id="dialogCategory"></span>
+          </div>
+          <div class="dialog-actions">
+            <a class="project-open" id="dialogOpenLink" target="_blank" rel="noopener noreferrer">Open project <span aria-hidden="true">↗</span></a>
+            <button class="dialog-close" id="dialogClose" type="button" aria-label="Close preview">×</button>
+          </div>
+        </header>
+        <div class="dialog-body">
+          <iframe id="projectFrame" title="Project preview" allowfullscreen></iframe>
+          <div class="dialog-message" id="dialogMessage" hidden>
+            <p id="dialogMessageText"></p>
+            <a class="project-open" id="dialogMessageLink" target="_blank" rel="noopener noreferrer">Open profile <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <footer>
+      &copy; <span id="year"></span> Marielle Jane Grace Andres
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
