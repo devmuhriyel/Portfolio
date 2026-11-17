@@ -1,122 +1,286 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="day">
+<html lang="en" data-theme="night">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Marielle Jane Grace Andres | Portfolio</title>
-  
-  <!-- Fonts -->
+  <meta name="description" content="Walk around MJ's room: UI/UX designs, Canva works and digital art by Marielle Jane Grace Andres." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  
+  <script>
+    try { document.documentElement.setAttribute('data-theme', localStorage.getItem('mj-theme') || 'night'); } catch (e) {}
+  </script>
 </head>
-<body>
+<body class="room-mode">
+  <!-- loading screen: shows straight away, fades when the 3D room is ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <style>
+      .loader { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: radial-gradient(120% 90% at 50% 35%, #1c1850, #0d0b22 60%, #07060f); color: #f4f1fb; font-family: 'Space Grotesk', system-ui, sans-serif; transition: opacity 0.6s ease, visibility 0.6s; }
+      .loader.done { opacity: 0; visibility: hidden; }
+      .loader-in { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; padding: 24px; }
+      .loader svg { width: min(220px, 52vw); height: auto; overflow: visible; animation: ld-float 3s ease-in-out infinite; }
+      .ld-win { animation: ld-glow 2.4s ease-in-out infinite; }
+      .ld-star { animation: ld-tw 2s ease-in-out infinite; } .ld-star:nth-of-type(2n) { animation-delay: -1s; }
+      .ld-name { margin: 0; font-size: clamp(1.1rem, 3vw, 1.4rem); font-weight: 700; }
+      .ld-sub { margin: -10px 0 0; font-size: 0.9rem; color: #b8b2e0; }
+      .ld-bar { width: min(240px, 60vw); height: 8px; border-radius: 99px; background: #241f4d; overflow: hidden; }
+      .ld-bar i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #ff7eb6, #7cc4ff); transition: width 0.4s ease; }
+      @keyframes ld-float { 50% { transform: translateY(-6px); } }
+      @keyframes ld-glow { 50% { opacity: 0.6; } }
+      @keyframes ld-tw { 50% { opacity: 0.2; } }
+      @media (prefers-reduced-motion: reduce) { .loader svg, .ld-win, .ld-star { animation: none; } }
+    </style>
+    <div class="loader-in">
+      <svg viewBox="0 0 220 170" aria-hidden="true">
+        <polygon class="ld-star" points="30,20 32,26 38,28 32,30 30,36 28,30 22,28 28,26" fill="#fff6d8"/>
+        <polygon class="ld-star" points="190,34 191.5,38 195.5,39.5 191.5,41 190,45 188.5,41 184.5,39.5 188.5,38" fill="#9fd8ff"/>
+        <polygon class="ld-star" points="176,8 177,11 180,12 177,13 176,16 175,13 172,12 175,11" fill="#ff9fca"/>
+        <!-- island -->
+        <polygon points="110,150 18,108 110,66 202,108" fill="#2f6b45"/>
+        <polygon points="18,108 110,150 110,166 40,124" fill="#5a3d33"/>
+        <polygon points="202,108 110,150 110,166 180,124" fill="#40291f"/>
+        <!-- floor -->
+        <polygon points="110,128 46,98 110,68 174,98" fill="#3b3468"/>
+        <!-- left wall + back wall -->
+        <polygon points="46,98 110,68 110,22 46,52" fill="#2a2560"/>
+        <polygon points="110,68 174,98 174,52 110,22" fill="#332c70"/>
+        <!-- window with warm light -->
+        <polygon class="ld-win" points="128,50 156,63 156,80 128,67" fill="#ffd38a"/>
+        <path d="M142 56.5 V73.5 M128 58.5 L156 71.5" stroke="#4a3f7a" stroke-width="2.5"/>
+        <!-- bed -->
+        <polygon points="62,98 92,84 108,92 78,106" fill="#e9e6ff"/>
+        <polygon points="62,98 78,106 78,112 62,104" fill="#c8c0ea"/>
+        <polygon points="78,106 108,92 108,98 78,112" fill="#2f5fa8"/>
+        <polygon points="70,94 92,84 100,88 78,98" fill="#3f7ad0"/>
+        <!-- sleeping black cat -->
+        <ellipse cx="88" cy="88" rx="7" ry="4" fill="#1f1c2b"/>
+        <polygon points="82,85 83,80 86,84" fill="#1f1c2b"/>
+        <!-- little pink chair -->
+        <polygon points="132,104 144,98 150,101 138,107" fill="#ff7eb6"/>
+        <polygon points="144,98 150,101 150,90 144,87" fill="#ff9fca"/>
+      </svg>
+      <p class="ld-name">Marielle Jane Grace Andres</p>
+      <p class="ld-sub" id="loaderText">getting the room ready…</p>
+      <div class="ld-bar" aria-hidden="true"><i id="loaderBar"></i></div>
+    </div>
+    <script>
+      (function () {
+        var bar = document.getElementById('loaderBar'), shown = Date.now(), p = 8;
+        bar.style.width = p + '%';
+        // creeps forward while files download, then jumps to 100% when the room has drawn its first frame
+        var t = setInterval(function () { p = Math.min(90, p + (90 - p) * 0.08); bar.style.width = p + '%'; }, 200);
+        window.roomReady = function () {
+          clearInterval(t); bar.style.width = '100%';
+          setTimeout(function () { document.getElementById('loader').classList.add('done'); }, Math.max(350, 900 - (Date.now() - shown)));
+        };
+        window.addEventListener('error', function () {
+          clearInterval(t);
+          document.getElementById('loaderText').textContent = "The 3D room couldn't load on this browser. Try updating it or using another one.";
+        });
+      })();
+    </script>
+  </div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+  <div class="grain" id="grain" aria-hidden="true"></div>
 
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <span style="font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em; color: var(--accent-pink);">PORTFOLIO</span>
-      <button class="theme-toggle" id="themeBtn" aria-label="Switch to night mode" title="Switch to night mode">
-        <span id="themeIcon">☀️</span>
-      </button>
-    </header>
-
-    <!-- Bio / Intro -->
-    <section class="profile">
-      <h1>Marielle Jane Grace Andres</h1>
-      <div class="profile-links">
-        <a href="https://github.com/devmuhriyel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Open my GitHub profile">
-        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-1.04-.01-1.89-2.78.62-3.37-1.21-3.37-1.21-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.58 2.35 1.12 2.92.86.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.2 9.2 0 0 1 12 7.04c.85 0 1.7.12 2.49.37 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.95.68 1.92 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" /></svg>
-        GitHub
-        </a>
-        <a href="https://www.linkedin.com/in/devmuhriyel" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Open my LinkedIn profile">
-          <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="M5.2 3.5a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM3.3 9.6h3.8V21H3.3V9.6Zm6.2 0h3.6v1.56h.05c.5-.95 1.72-1.95 3.55-1.95 3.8 0 4.5 2.5 4.5 5.75V21h-3.8v-5.36c0-1.28-.02-2.93-1.78-2.93-1.78 0-2.05 1.4-2.05 2.84V21H9.5V9.6Z" /></svg>
-          LinkedIn
-        </a>
+  <header class="topbar scrolled" id="topbar">
+    <a class="brand" href="#" id="brandHome" hidden></a>
+      <div class="namecard">
+        <p class="mono tagline"><span class="accent">~/</span>mj's room</p>
+        <p class="name" role="heading" aria-level="1" id="name" data-text="Marielle Jane Grace Andres">Marielle Jane Grace Andres</p>
+        <p class="role">UI/UX Designer &amp; Digital Artist</p>
       </div>
-      <p>A collection of my designs and developmental projects.</p>
+    <nav class="nav" aria-label="Jump straight to my work">
+      <button type="button" data-open="figma">Figma</button>
+      <button type="button" data-open="canva">Canva</button>
+      <button type="button" data-open="art">Art</button>
+      <button type="button" data-open="contact">Contact</button>
+    </nav>
+    <button class="mode" id="themeBtn" type="button" aria-label="Switch to light mode">&#9790;</button>
+  </header>
+
+  <main>
+    <!-- ===== MJ's room ===== -->
+    <section class="room-view" id="home" aria-label="MJ's room. Walk with W A S D or the arrow keys, press E to use things.">
+      <div class="viewport" id="viewport"></div>
+      <div class="e-prompt" id="prompt" aria-hidden="true"><kbd>E</kbd><span id="promptText"></span></div>
+      <div class="cat-bubble mono" id="catBubble" aria-hidden="true"></div>
+      <div class="hotspots" id="hotspots" aria-label="Things in the room"></div>
+      <div class="controls-hint mono" id="controlsHint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> walk &nbsp;&middot;&nbsp; <kbd>E</kbd> use &nbsp;&middot;&nbsp; or click anything</div>
+      <div class="touch-pad" id="touchPad" aria-hidden="true"><span class="stick" id="stick"></span></div>
+            <button class="touch-e" id="touchE" type="button" aria-label="Use the nearby thing">E</button>
+      <p class="sr-only">You can also use the menu at the top to open each section directly.</p>
     </section>
 
-    <!-- Category Filters -->
-    <nav class="filters" aria-label="Filter portfolio by category">
-      <button class="filter-btn active" data-category="all">All</button>
-      <button class="filter-btn" data-category="figma">Figma</button>
-      <button class="filter-btn" data-category="canva">Canva</button>
-      <button class="filter-btn" data-category="digital-art">Digital Art</button>
-    </nav>
-
-    <!-- Project preview buttons -->
-    <main class="links-list" id="portfolioList">
-      <button class="link-card project-button" type="button" data-category="figma" data-title="Bible Study App" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FH6zoaBemqDUv5z3ZuDFk3A%2FBible-App--Copy-%3Ft%3DjWJaD0wMbaGJyNI6-1" data-project-url="https://www.figma.com/design/H6zoaBemqDUv5z3ZuDFk3A/Bible-App--Copy-?t=jWJaD0wMbaGJyNI6-1">
-        <span class="project-heading"><span class="link-title">Bible Study App</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="figma" data-title="CINECHILL" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FogaAPc76WbhZEbiU7C1AYk%2FMovie-Ticket-Booking-Application%3Fnode-id%3D0-1%26p%3Df" data-project-url="https://www.figma.com/design/ogaAPc76WbhZEbiU7C1AYk/Movie-Ticket-Booking-Application?node-id=0-1&amp;p=f">
-        <span class="project-heading"><span class="link-title">CINECHILL</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="figma" data-title="SLU Document Management System" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FJl4KgKn2wF2b0hKv1C741G%2FWebtech%3Fnode-id%3D1-14%26t%3Dj0VO6nka4wXLfBV8-1" data-project-url="https://www.figma.com/design/Jl4KgKn2wF2b0hKv1C741G/Webtech?node-id=1-14&amp;t=j0VO6nka4wXLfBV8-1">
-        <span class="project-heading"><span class="link-title">SLU Document Management System</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="figma" data-title="Gamified Learning Application" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2Fp6Knreh2QNXJU419newlZ7%2FFinal-Project-Prototypes%3Fnode-id%3D0-1%26t%3DrOabs3kIKgdPbBab-1" data-project-url="https://www.figma.com/design/p6Knreh2QNXJU419newlZ7/Final-Project-Prototypes?node-id=0-1&amp;t=rOabs3kIKgdPbBab-1">
-        <span class="project-heading"><span class="link-title">Gamified Learning Application</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="figma" data-title="Agricultural Website" data-provider="Figma" data-embed-url="https://www.figma.com/embed?embed_host=share&amp;url=https%3A%2F%2Fwww.figma.com%2Fdesign%2F44fIxEYOBAuk8h1HvbpemK%2F211Website--Copy-%3Fnode-id%3D0-1%26t%3DjWJaD0wMbaGJyNI6-1" data-project-url="https://www.figma.com/design/44fIxEYOBAuk8h1HvbpemK/211Website--Copy-?node-id=0-1&amp;t=jWJaD0wMbaGJyNI6-1">
-        <span class="project-heading"><span class="link-title">Agricultural Website</span><span class="category-badge">Figma</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="canva" data-title="Brochure Theme Park" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAHDX22a1mc/hvzuJRVQqkfoH_wLaHdedg/view?embed" data-project-url="https://www.canva.com/design/DAHDX22a1mc/hvzuJRVQqkfoH_wLaHdedg/view">
-        <span class="project-heading"><span class="link-title">Brochure Theme Park</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="canva" data-title="MedMory Pitch Presentation" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAGyZBO3uHw/9zVVA5EkOzv5kEm4VcNriQ/view?embed" data-project-url="https://www.canva.com/design/DAGyZBO3uHw/9zVVA5EkOzv5kEm4VcNriQ/view">
-        <span class="project-heading"><span class="link-title">MedMory Pitch Presentation</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="canva" data-title="Poster" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAGLel-KS7E/9ElC4tIzWZIwD4UjfPobXQ/view?embed" data-project-url="https://www.canva.com/design/DAGLel-KS7E/9ElC4tIzWZIwD4UjfPobXQ/view">
-        <span class="project-heading"><span class="link-title">Poster</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="canva" data-title="GMO Infographic" data-provider="Canva" data-embed-url="https://www.canva.com/design/DAFU4-6u3us/JHame6MnQcJdRIMPnizXjA/view?embed" data-project-url="https://www.canva.com/design/DAFU4-6u3us/JHame6MnQcJdRIMPnizXjA/view">
-        <span class="project-heading"><span class="link-title">GMO Infographic</span><span class="category-badge">Canva</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 1" data-provider="Digital Art" data-embed-url="images/DigiArt/image.png" data-project-url="images/DigiArt/image.png">
-        <span class="project-heading"><span class="link-title">Digital Art 1</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 2" data-provider="Digital Art" data-embed-url="images/DigiArt/image2.png" data-project-url="images/DigiArt/image2.png">
-        <span class="project-heading"><span class="link-title">Digital Art 2</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 3" data-provider="Digital Art" data-embed-url="images/DigiArt/image3.png" data-project-url="images/DigiArt/image3.png">
-        <span class="project-heading"><span class="link-title">Digital Art 3</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-      <button class="link-card project-button" type="button" data-category="digital-art" data-title="Digital Art 4" data-provider="Digital Art" data-embed-url="images/DigiArt/image4.png" data-project-url="images/DigiArt/image4.png">
-        <span class="project-heading"><span class="link-title">Digital Art 4</span><span class="category-badge">Digital Art</span></span><span class="preview-label">Preview <span aria-hidden="true">↗</span></span>
-      </button>
-    </main>
-
-    <dialog class="project-dialog" id="projectDialog" aria-labelledby="dialogTitle">
-      <div class="dialog-panel">
-        <header class="dialog-header">
-          <div class="dialog-heading">
-            <h2 id="dialogTitle"></h2>
-            <span class="category-badge" id="dialogCategory"></span>
+    <!-- ===== Desk: side view (computer + pen tablet) ===== -->
+    <div class="overlay desk-ov" id="ov-desk" role="dialog" aria-modal="true" aria-label="MJ's desk" hidden>
+      <div class="desk-bg" aria-hidden="true"></div>
+      <div class="desk-track" id="deskTrack">
+        <section class="station" id="figma" aria-label="Computer: Figma designs">
+          <div class="monitor">
+            <div class="monitor-screen">
+              <div class="app-tabs" role="tablist" aria-label="Apps on the computer">
+                <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <button type="button" role="tab" data-app="figma" class="on" aria-selected="true"><span class="tab-ico ico-figma" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Figma</button>
+                <button type="button" role="tab" data-app="canva" aria-selected="false"><span class="tab-ico ico-canva" aria-hidden="true">C</span>Canva</button>
+                <span class="os-clock mono" id="osClock">00:00</span>
+              </div>
+              <div class="app" id="app-figma">
+              <div class="station-head"><h2>The Canvas</h2><p class="sub">Drag the frames around, click one to open it.</p></div>
+              <div class="canvas" id="canvas">
+        <div class="toolbar" aria-hidden="true">
+          <span class="tool on">&#10148;</span><span class="tool">#</span><span class="tool">&#9633;</span><span class="tool">&#9998;</span><span class="tool">T</span>
+          <span class="tool-sep"></span><span class="zoom mono">100%</span>
+        </div>
+        <div class="frames-area" id="framesArea"></div>
+        <div class="fake-cursor c1" aria-hidden="true"><svg viewBox="0 0 16 20"><path d="M1 1 L1 16 L5 12 L8 19 L11 18 L8 11 L14 11 Z"/></svg><span>MJ</span></div>
+        <div class="fake-cursor c2" aria-hidden="true"><svg viewBox="0 0 16 20"><path d="M1 1 L1 16 L5 12 L8 19 L11 18 L8 11 L14 11 Z"/></svg><span>guest</span></div>
+      </div>
+            </div>
+              <div class="app" id="app-canva" hidden>
+                <div class="station-head"><h2>My Canva Designs</h2><p class="sub">Click a design to see it big.</p></div>
+                <div class="canva-grid" id="canvaGrid"></div>
+              </div>
+            </div>
+            <div class="monitor-chin"><span class="mono">mj</span></div>
+            <div class="monitor-stand"></div>
           </div>
-          <div class="dialog-actions">
-            <a class="project-open" id="dialogOpenLink" target="_blank" rel="noopener noreferrer">Open project <span aria-hidden="true">↗</span></a>
-            <button class="dialog-close" id="dialogClose" type="button" aria-label="Close preview">×</button>
+        </section>
+        <section class="station" id="art" aria-label="Pen tablet: digital art">
+          <div class="station-head center"><h2>The Drawing Tablet</h2><p class="sub">Pick a layer to paint it in, click the canvas to see it big.</p></div>
+          <div class="tablet-wrap">
+        <div class="tablet" id="tablet">
+          <div class="express-keys" aria-hidden="true"><span></span><span></span><span></span><span class="ring"></span><span></span><span></span></div>
+          <div class="screen-area">
+            <div class="app-bar mono" aria-hidden="true">
+              <span class="app-dots"><i></i><i></i><i></i></span>
+              <span class="app-name">mj-paint</span>
+              <span class="app-tools"><i>&#9998;</i><i>&#9673;</i><i>&#9711;</i><i>&#8634;</i></span>
+              <span class="app-zoom" id="appZoom">100%</span>
+            </div>
+            <div class="app-main">
+              <div class="brush-bar" aria-hidden="true">
+                <span class="sw" style="--c:#ff7eb6"></span><span class="sw" style="--c:#7cc4ff"></span><span class="sw" style="--c:#ffd38a"></span><span class="sw" style="--c:#b69cff"></span><span class="sw" style="--c:#f4f1fb"></span>
+                <span class="brush-size"></span>
+              </div>
+              <button class="art-canvas" id="artCanvas" type="button" aria-label="View this artwork full size">
+                <img id="artImg" alt="" />
+                <img id="artNext" alt="" aria-hidden="true" />
+                <span class="canvas-title mono" id="artTitle"></span>
+              </button>
+              <div class="layers" id="layers" role="tablist" aria-label="Artworks">
+                <p class="layers-title mono">layers</p>
+              </div>
+            </div>
           </div>
-        </header>
-        <div class="dialog-body">
-          <iframe id="projectFrame" title="Project preview" allowfullscreen></iframe>
-          <div class="dialog-message" id="dialogMessage" hidden>
-            <p id="dialogMessageText"></p>
-            <a class="project-open" id="dialogMessageLink" target="_blank" rel="noopener noreferrer">Open profile <span aria-hidden="true">↗</span></a>
+          <span class="tablet-logo mono" aria-hidden="true">mj</span>
+        </div>
+        <div class="stylus" id="stylus" aria-hidden="true"><span class="tip"></span><span class="grip"></span><span class="btn1"></span></div>
+      </div>
+        </section>
+      </div>
+      <div class="desk-desk" aria-hidden="true"></div>
+      <div class="desk-ui">
+        <button class="nav-btn" id="deskPrev" type="button" aria-label="Slide to the computer">&larr;</button>
+        <div class="desk-dots mono"><button type="button" data-st="0" class="on">computer</button><button type="button" data-st="1">pen tablet</button></div>
+        <button class="nav-btn" id="deskNext" type="button" aria-label="Slide to the pen tablet">&rarr;</button>
+      </div>
+      <p class="desk-hint mono"><kbd>A</kbd> <kbd>D</kbd> slide &middot; <kbd>Esc</kbd> stand up</p>
+      <button class="ov-close" type="button" data-close aria-label="Stand up and go back to the room">stand up &times;</button>
+    </div>
+
+    <!-- ===== Mail at the door ===== -->
+    <div class="overlay" id="ov-mail" role="dialog" aria-modal="true" aria-label="Mail" hidden>
+      <section class="ov-panel" id="contact">
+        <header class="zone-head"><h2>You've got mail!</h2></header>
+        <div class="mailbox" id="mailbox">
+          <div class="letter l-pink">
+            <button type="button" class="env" aria-label="Open the letter: hi there!"><span class="flap"></span><span class="stamp">&#127803;</span><span class="env-label">hi there!</span></button>
+            <div class="paper"><button type="button" class="letter-close" aria-label="Close letter">&times;</button>
+              <p class="hand">Hi! Thanks for visiting my little room.</p>
+              <p>I'm MJ, a UI/UX designer and digital artist. I like making things that are easy to use and nice to look at. Feel free to look around, pet the cat, and check out my work at the desk.</p>
+              <p class="sign">MJ</p></div>
+          </div>
+          <div class="letter l-blue">
+            <button type="button" class="env" aria-label="Open the letter: GitHub"><span class="flap"></span><span class="stamp">&#9993;</span><span class="env-label">github</span></button>
+            <div class="paper"><button type="button" class="letter-close" aria-label="Close letter">&times;</button>
+              <p class="hand">My code lives here</p><p>Projects, school work and the code for this portfolio.</p>
+              <a class="btn" href="https://github.com/devmuhriyel" target="_blank" rel="noopener noreferrer">Visit my GitHub &#8599;</a></div>
+          </div>
+          <div class="letter l-yellow">
+            <button type="button" class="env" aria-label="Open the letter: LinkedIn"><span class="flap"></span><span class="stamp">&#9733;</span><span class="env-label">linkedin</span></button>
+            <div class="paper"><button type="button" class="letter-close" aria-label="Close letter">&times;</button>
+              <p class="hand">Let's connect</p><p>Internships, collabs, or just to say hi.</p>
+              <a class="btn" href="https://www.linkedin.com/in/devmuhriyel" target="_blank" rel="noopener noreferrer">Visit my LinkedIn &#8599;</a></div>
+          </div>
+          <div class="letter l-lilac" id="writeBack">
+            <button type="button" class="env" aria-label="Open the letter: write back"><span class="flap"></span><span class="stamp">&#9993;</span><span class="env-label">write back</span></button>
+            <div class="paper"><button type="button" class="letter-close" aria-label="Close letter">&times;</button>
+              <p class="hand">Write me a letter</p>
+              <form id="replyForm"><input id="replyName" type="text" placeholder="your name" aria-label="Your name"><textarea id="replyMsg" rows="4" placeholder="your message..." aria-label="Your message" required></textarea><button class="btn" type="submit">Send &#9993;</button></form></div>
           </div>
         </div>
+        <p class="foot mono">&copy; <span id="year"></span> Marielle Jane Grace Andres</p>
+      </section>
+      <button class="ov-close" type="button" data-close aria-label="Close">back to room &times;</button>
+    </div>
+
+    <!-- ===== Coffee break ===== -->
+    <div class="overlay" id="ov-mug" role="dialog" aria-modal="true" aria-label="Coffee break" hidden>
+      <section class="ov-panel center">
+        <header class="zone-head"><h2>Stir the latte</h2></header>
+        <div class="mug-stage" id="mugStage">
+        <div class="mug-glow" aria-hidden="true"></div>
+        <div class="steam" id="steam" aria-hidden="true">
+          <span class="wisp w1"></span><span class="wisp w2"></span><span class="wisp w3"></span>
+          <span class="steam-word sw1 mono">ui/ux</span><span class="steam-word sw2 mono">art</span><span class="steam-word sw3 mono">code</span>
+        </div>
+        <button class="mug" id="mug" type="button" aria-label="Stir the coffee to change the latte art">
+          <svg viewBox="0 0 420 380" id="mugSvg" aria-hidden="true"></svg>
+        </button>
+        <p class="mug-hint mono" id="mugHint">click the cup to stir</p>
       </div>
-    </dialog>
+      </section>
+      <button class="ov-close" type="button" data-close aria-label="Close">back to room &times;</button>
+    </div>
 
-    <footer>
-      &copy; <span id="year"></span> Marielle Jane Grace Andres
-    </footer>
-  </div>
+    <!-- ===== Pinboard: about me ===== -->
+    <div class="overlay" id="ov-about" role="dialog" aria-modal="true" aria-label="About me" hidden>
+      <section class="ov-panel">
+        <header class="zone-head"><h2>Hi, I'm MJ</h2></header>
+        <div class="notes">
+          <figure class="note polaroid"><img src="images/me.jpg" alt="Photo of Marielle Jane Grace Andres"><figcaption>me</figcaption></figure>
+          <div class="note n1"><b>who</b><p>Marielle Jane Grace Andres, an IT student who loves designing interfaces and painting digital art.</p></div>
+          <div class="note n2"><b>i make</b><p>UI/UX designs in Figma, layouts in Canva, digital paintings, and things for the web.</p></div>
+          <div class="note n3"><b>i love</b><p>cats, sunflowers, starry night skies, and anything blue.</p></div>
+          <div class="note n4"><b>find me</b><p><a href="https://github.com/devmuhriyel" target="_blank" rel="noopener noreferrer">github</a> &middot; <a href="https://www.linkedin.com/in/devmuhriyel" target="_blank" rel="noopener noreferrer">linkedin</a></p></div>
+        </div>
+      </section>
+      <button class="ov-close" type="button" data-close aria-label="Close">back to room &times;</button>
+    </div>
+  </main>
 
-  <script src="script.js"></script>
+  <div class="toast mono" id="toast" role="status"></div>
+  <div class="fx" id="fx" aria-hidden="true"></div>
+
+  <dialog class="preview" id="preview" aria-labelledby="previewTitle">
+    <header class="preview-head">
+      <div>
+        <span class="mono tag" id="previewTag"></span>
+        <h2 id="previewTitle"></h2>
+        <p class="preview-desc" id="previewDesc" hidden></p>
+      </div>
+      <div class="preview-actions">
+        <a class="btn" id="previewOpen" target="_blank" rel="noopener noreferrer">Open</a>
+        <button class="nav-btn" id="previewClose" type="button" aria-label="Close">&times;</button>
+      </div>
+    </header>
+    <div class="preview-body" id="previewBody"></div>
+  </dialog>
+
+  <script src="vendor/three.min.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
